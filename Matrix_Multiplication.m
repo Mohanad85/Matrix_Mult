@@ -66,9 +66,64 @@ function [VecForm_1,VecForm_2]= matrix_to_vector (MatForm)
 
 
 
-# Hi user, Enter A and B
 
-A=[1 2 3 90 180 30];
-B=[16 3 4 -45 90 45];
-C=vec_multiplication(A,B);
-[D1,D2]=matrix_to_vector(C)
+# multiply 2 vectors
+function ResVect= multiply_two_vectors(Vec1, Vec2)
+  MatForm= vec_multiplication (Vec1, Vec2);
+  ResVect=matrix_to_vector (MatForm);
+    endfunction
+
+# function to calculate Voffset out of Reference position and Found Position
+function VOffset= calc_VOffset(RF,FP)
+  #Voffset= FP:inv(RF)
+  RF_mat=vec_to_matrix(RF);
+  InvRF_mat=inv(RF_mat);
+  InvRF=matrix_to_vector(InvRF_mat);
+  VOffset_mat=vec_multiplication(FP,InvRF);
+  VOffset=matrix_to_vector(VOffset_mat);
+  endfunction
+
+
+function InvVect=inverse_vector(Vector)
+  MatForm= vec_to_matrix (Vector);
+  InvMatForm=inv(MatForm);
+  InvVect=matrix_to_vector (InvMatForm);
+  endfunction
+
+function PointOffset= calc_point_offset(RF,FP)
+  #Point offset=inv(RF):FP
+  RF_mat=vec_to_matrix(RF);
+  InvRF_mat=inv(RF_mat);
+  InvRF=matrix_to_vector(InvRF_mat);
+  PointOffset_mat=vec_multiplication(InvRF,FP);
+  PointOffset=matrix_to_vector(PointOffset_mat);
+  endfunction
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  # Hi user, Enter A and B
+RF=[0.855	-0.622	-0.056	0.946	-0.011	-0.007];
+FP=[11.2	9.5	-0.9	0.9	5.2	0];
+disp('Calculated Voffset is: ')
+Voffset=calc_VOffset(RF,FP)
+
+disp('Calculated Point Offset is: ')
+PointOffset=calc_point_offset(RF,FP)
+
+
+P2=[-1.318	-0.425	1.774	-179.998	-5.151	-180];
+P2_Shifted=[9.204	9.651	1.115	-179.98	-10.327	179.999];
+InvP2=inverse_vector(P2);
+offsetPickPose=multiply_two_vectors(InvP2,P2_Shifted)
